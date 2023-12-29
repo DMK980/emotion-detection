@@ -28,20 +28,25 @@ def detecting_emotion():
 
     """
     # getting the text to be analyzed
-    textToBeAnalyzed = request.args.get["textToAnalyze"]
-    
+    text_to_be_analyzed = request.args.get("textToAnalyze")
     # getting the emotions from the emotion detector application
-    response = emotion_detector(textToBeAnalyzed)
+    response = emotion_detector(text_to_be_analyzed)
+
+    #error handling
+    if response["dominant_emotion"] == "None":
+        return "Invalid text! Please try again!"
 
     # formatting he response to desired specification
-    ans = "For the given statement,"
+    ans = "For the given statement, the system response is "
     for key,value in response.items():
 
         if key == "dominant_emotion":
+            ans = ans.split(",")[:-1]
+            ans = ",".join(ans)
             ans += f". The dominant emotion is {value}."
             break
 
-        ans += f" ' {key}': {value},"
+        ans += f" '{key}': {value},"
 
     return ans
 
